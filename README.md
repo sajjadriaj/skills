@@ -1,74 +1,68 @@
-# assistant-skills
+# skills
 
-Skills for coding assistants, installable across Claude Code, Codex, pi and Cursor.
-Each skill is a folder under `skills/` with a `SKILL.md` (agent-skills format).
+Skills for coding assistants that make their answers easy to follow, even in areas you don't know well. Works with Claude Code, Codex, pi and Cursor.
 
-| Skill | What it does | Always on |
+Each skill is a folder in `skills/` with a `SKILL.md` (agent-skills format).
+
+## Skills
+
+| Skill | What it does | Loads |
 |---|---|---|
-| `clear-response` | Plain-language gist first, severity-coded must-know items, ASCII diagrams, jargon explained inline, pathways/risks/divergence for plans | yes |
-| `orient` | One-page map of an unfamiliar area before changing it: gist, diagram with file paths, glossary, landmines, where the change goes | no (on request / unfamiliar area) |
-| `diagram` | Clean SVG diagrams (architecture, flow, sequence, state, decision paths, timeline) with a fixed design system, light/dark, fonts embedded + layout lint via `build.py` | no (on request) |
-| `pr-review` | Review any PR/branch/diff: plain-language brief, verified findings with failure scenarios, ship-risk checklist, verdict | no (on request) |
-| `pr-write` | PR title + description: why, behavior changes, ship risks, honest test notes, rollback | no (on request) |
-| `handoff` | Write, update, audit, or resume from `~/workspace/handoff/<project>/handoff.md`; `audit.py` checks staleness, secrets, broken refs | no (on request / session start) |
-| `prove-it` | No "done/fixed/works" without the command and its output in the same message | yes |
-| `debug-flow` | Reproduce, hypothesis tree, test each branch, confirmed root cause, fix with a test that failed first | no (on bugs) |
-| `learn` | Per-domain notes (`~/workspace/learn/<domain>.md`): terms, traps, what you know; teach mode | no (end of unfamiliar work / on request) |
-| `product-test` | User story or codebase into step-by-step YAML product test specs (steps, expectations, edge cases); optional browser run | no (on request) |
+| `clear-response` | Plain-language gist first, severity-coded must-know items (🔴🟠🟡🟢🔵), ASCII diagrams, jargon explained inline, paths and risks for plans | always |
+| `prove-it` | No "done", "fixed" or "works" without the command and its output | always |
+| `orient` | One-page map of an unfamiliar area: gist, diagram with file paths, terms, landmines, where the change goes | on request |
+| `debug-flow` | Reproduce, hypothesis tree, confirmed root cause with `file:line`, fix proven by a test that failed first | on bugs |
+| `pr-review` | Plain brief, findings with failure scenarios, ship-risk checklist, verdict | on request |
+| `pr-write` | PR title and body: why, what changed, ship risks, how tested, rollback | on request |
+| `handoff` | Write, resume or audit a session handoff doc; `audit.py` catches stale refs, secrets, invented SHAs | on request / session start |
+| `learn` | Per-domain notes of terms, traps and what you already know, so explanations skip it | on request |
+| `product-test` | User story or codebase to step-by-step YAML product test specs, with edge cases | on request |
+| `diagram` | Polished SVG diagrams with a fixed design system, light/dark, embedded fonts, layout lint | on request |
 
 ## Install
 
-**Claude Code (plugin, recommended):** skills + hooks (always-on skills at session start, handoff resume prompt, end-of-day handoff reminder).
+**Claude Code** (plugin: skills plus hooks for always-on skills and handoff reminders):
 
 ```
-/plugin marketplace add /path/to/assistant-skills
+/plugin marketplace add sajjadriaj/skills
 /plugin install assistant-skills@assistant-skills
 ```
 
-Then run `./install.sh --skip claude` for the other hosts, so Claude Code doesn't load the skills twice.
-
-**Everything via script:**
+**Codex, pi, Cursor** (clone, then run the installer):
 
 ```bash
-./install.sh                          # Claude Code, Codex, pi (skips hosts not installed)
-./install.sh --cursor ~/code/myapp    # also add Cursor rules to one project
-./install.sh --uninstall [--cursor ~/code/myapp]
+git clone https://github.com/sajjadriaj/skills.git && cd skills
+./install.sh --skip claude              # Codex + pi (skips hosts not installed)
+./install.sh --skip claude --cursor ~/code/app   # also Cursor rules for one project
+./install.sh --uninstall                # remove everything it added
 ```
 
-What it does per host:
-
-| Host | Skill files | Always-on |
+| Host | Skills | Always-on skills |
 |---|---|---|
-| Claude Code | symlink in `~/.claude/skills/` | `@…/SKILL.md` import line in `~/.claude/CLAUDE.md` |
-| Codex | symlink in `~/.codex/skills/` | marked block in `~/.codex/AGENTS.md` |
-| pi | symlink in `~/.pi/agent/skills/` | marked block in `~/.pi/agent/AGENTS.md` |
-| Cursor | — | `.cursor/rules/<skill>.mdc` with `alwaysApply: true`, per project (Cursor's global rules are UI-only) |
+| Claude Code (no plugin) | symlinks in `~/.claude/skills/` | `@import` in `~/.claude/CLAUDE.md` |
+| Codex | symlinks in `~/.codex/skills/` | marked block in `~/.codex/AGENTS.md` |
+| pi | symlinks in `~/.pi/agent/skills/` | marked block in `~/.pi/agent/AGENTS.md` |
+| Cursor | `.cursor/rules/<skill>.mdc` per project | same, with `alwaysApply: true` |
 
-Your existing content in those files is preserved; install is safe to re-run.
+Existing content in those files is kept, and re-running is safe. Codex, pi and Cursor get an inlined copy, so re-run `./install.sh` after editing a skill.
 
-**After editing a skill, re-run `./install.sh`.** Claude Code reads the symlinked file
-directly, but Codex/pi/Cursor get an inlined copy.
+## Configure
 
-Which skills are always-on is set by `ALWAYS_ON` at the top of `install.sh`.
+- **Your strong areas:** list them under `Strong areas` in `skills/clear-response/SKILL.md` to skip jargon explanations there.
+- **Always-on set:** `ALWAYS_ON` at the top of `install.sh`.
+- **Folders:** handoffs go in `~/workspace/handoff/<project>/`, notes in `~/workspace/learn/` (change the first line of each skill; hooks read `ASSISTANT_SKILLS_HANDOFF_ROOT`).
 
-## Tuning clear-response
-
-List your areas of expertise under **Strong areas** in
-`skills/clear-response/SKILL.md`. Jargon explanations are skipped there; the gist and
-must-know sections stay on everywhere.
-
-## Tests
+## Test
 
 ```bash
-tests/test_install.sh         # installer against a sandbox $HOME
-tests/test_handoff_audit.sh   # handoff audit.py against a seeded doc
-evals/run.py                  # every skill on claude, codex, pi: pass/fail grid
-evals/run.py --host codex --case pr-review
-PI_MODEL=provider/model evals/run.py --host pi
+tests/test_install.sh          # installer, in a sandbox $HOME
+tests/test_handoff_audit.sh    # audit.py
+tests/test_hooks.sh            # plugin hooks
+evals/run.py [--host claude,codex,pi] [--case pr-review]   # every skill, pass/fail grid
 ```
 
-Evals run each case's prompt with the skill loaded, in a temp dir seeded with a small fixture
-(`evals/fixtures/shop`: a repo with planted bugs on `feature/coupons`), then check the reply and the
-files. Replies land in `evals/out/`. Re-run after editing any skill.
+Evals run each skill on a small fixture repo with planted bugs and check the reply and the files. Replies land in `evals/out/`. Set `PI_MODEL=provider/model` to choose pi's model.
 
-Fonts in `skills/diagram/fonts/` (Inter, JetBrains Mono) are under the SIL Open Font License; see the OFL files there.
+## License
+
+Fonts in `skills/diagram/fonts/` (Inter, JetBrains Mono) are under the SIL Open Font License.

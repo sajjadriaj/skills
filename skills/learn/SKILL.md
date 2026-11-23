@@ -10,7 +10,7 @@ Notes root: `~/workspace/learn/` (one file per domain: `<root>/<domain>.md`, e.g
 ## Capture (end of work in an unfamiliar area)
 
 1. Pick at most 5 things from this session worth keeping, in priority order: traps that would bite again, concepts that unlocked understanding, terms that kept coming up.
-2. Write them generic and plain, so they help on any project: "API Gateway REST APIs base64-encode binary bodies unless the content type is listed in `binaryMediaTypes`", not "fixed uraan previews".
+2. Write them generic and plain, so they help on any project: "API Gateway REST APIs base64-encode binary bodies unless the content type is listed in `binaryMediaTypes`", not "fixed the previews bug".
 3. Show them and ask: "Add these to learn/<domain>.md?" Write only on yes.
 4. Append under the right heading, skip anything already there (search first), keep the file sorted by heading.
 
