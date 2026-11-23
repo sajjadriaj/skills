@@ -1,0 +1,33 @@
+# A terminal walkthrough: each `run` types and runs a real command in a pty,
+# each `send` types an answer into the program that is still running.
+kind: terminal
+title: Python REPL Tour
+cwd: .
+cols: 90
+rows: 24
+font_size: 16
+voice: af_heart
+
+scenes:
+  - say: "This is a short tour of the Python interpreter, recorded from a real terminal."
+    hold: 0.5
+
+  - say: "First, the version we have installed."
+    run: python3 --version
+    hold: 1.0
+
+  - say: "Start the interactive prompt."
+    clear: true
+    run: python3 -q
+
+  - say: "Two plus two is four, as expected."
+    send: "2 + 2"
+    hold: 1.0
+
+  - say: "A list comprehension squares the numbers from zero to four."
+    send: "[n * n for n in range(5)]"
+    hold: 1.5
+
+  - say: "And exit when we are done."
+    send: "exit()"
+    hold: 1.0

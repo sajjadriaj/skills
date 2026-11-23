@@ -18,6 +18,7 @@ Each skill is a folder in `skills/` with a `SKILL.md` (agent-skills format).
 | `learn` | Per-domain notes of terms, traps and what you already know, so explanations skip it | on request |
 | `product-test` | User story or codebase to step-by-step YAML product test specs, with edge cases | on request |
 | `diagram` | Polished SVG diagrams with a fixed design system, light/dark, embedded fonts, layout lint | on request |
+| `walkthrough` | Narrated demo video (mp4) of a CLI or web app from a YAML script; voice and picture cannot drift | on request |
 
 ## Install
 

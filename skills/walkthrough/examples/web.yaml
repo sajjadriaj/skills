@@ -1,0 +1,30 @@
+# A web walkthrough: Playwright drives Chromium, a synthetic cursor follows each
+# action. The password comes from the environment, never from this file:
+#   DEMO_PASSWORD=... walkthrough examples/web.yaml --rehearse
+kind: web
+title: Sign In Tour
+url: http://localhost:3000/login
+viewport: [1280, 800]
+device_scale_factor: 2
+browser_args: ["--font-render-hinting=none"]
+
+scenes:
+  - say: "This is the sign in page."
+    wait_for: "form:visible"
+    hold: 0.5
+
+  - say: "We sign in with the demo account."
+    fill: "input[name=email]:visible"
+    value: "demo@example.com"
+
+  - say: "The password comes from the environment, so it never sits in the script."
+    fill: "input[name=password]:visible"
+    value: "{{env:DEMO_PASSWORD}}"
+
+  - say: "Press sign in."
+    click: "button[type=submit]:visible"
+
+  - say: "And we land on the dashboard."
+    wait_for: "main h1:visible"
+    highlight: "main h1:visible"
+    hold: 1.5
