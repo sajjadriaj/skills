@@ -1,0 +1,94 @@
+#!/usr/bin/env bash
+# Install assistant-skills into Claude Code, Codex, pi and (per project) Cursor.
+# Usage: ./install.sh [--uninstall] [--cursor <project-dir>]
+set -euo pipefail
+
+ALWAYS_ON="clear-response"   # skills that load every session
+
+REPO="$(cd "$(dirname "$0")" && pwd)"
+UNINSTALL=0
+CURSOR_DIR=""
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --uninstall) UNINSTALL=1 ;;
+    --cursor) CURSOR_DIR="${2:?--cursor needs a project dir}"; shift ;;
+    *) echo "unknown arg: $1" >&2; exit 2 ;;
+  esac
+  shift
+done
+
+body() { awk '/^---$/ && n<2 {n++; next} n>=2' "$1"; }                  # SKILL.md without frontmatter
+description() { sed -n 's/^description: *//p' "$1" | head -1; }
+is_always_on() { case " $ALWAYS_ON " in *" $1 "*) return 0 ;; esac; return 1; }
+
+# Rewrite in place via cat (keeps symlinks and permissions of the user's file).
+rewrite() { local f="$1" tmp; tmp="$(mktemp)"; cat > "$tmp"; cat "$tmp" > "$f"; rm -f "$tmp"; }
+
+remove_block() {  # file name
+  [ -f "$1" ] || return 0
+  awk -v s="<!-- assistant-skills:$2:start -->" -v e="<!-- assistant-skills:$2:end -->" \
+    '$0==s {skip=1; next} $0==e {skip=0; next} !skip' "$1" | rewrite "$1"
+}
+
+add_block() {  # file name skill_md
+  remove_block "$1" "$2"
+  [ -s "$1" ] && [ "$(tail -c1 "$1")" != "" ] && echo >> "$1"
+  { echo "<!-- assistant-skills:$2:start -->"; body "$3"; echo "<!-- assistant-skills:$2:end -->"; } >> "$1"
+}
+
+remove_line() {  # file line
+  [ -f "$1" ] || return 0
+  { grep -vxF -- "$2" "$1" || true; } | rewrite "$1"
+}
+
+add_line() {  # file line
+  touch "$1"
+  grep -qxF -- "$2" "$1" && return 0
+  [ -s "$1" ] && [ "$(tail -c1 "$1")" != "" ] && echo >> "$1"
+  echo "$2" >> "$1"
+}
+
+link_skill() {  # skills_dir name
+  local target="$1/$2" src="$REPO/skills/$2"
+  if [ "$UNINSTALL" = 1 ]; then
+    [ -L "$target" ] && [ "$(readlink "$target")" = "$src" ] && rm "$target"
+    return 0
+  fi
+  mkdir -p "$1"
+  if [ -L "$target" ]; then ln -sfn "$src" "$target"
+  elif [ -e "$target" ]; then echo "warn: $target exists and is not our symlink, left alone"
+  else ln -s "$src" "$target"; fi
+}
+
+# host: label root skills_dir always_on_kind always_on_file
+install_host() {
+  local label="$1" root="$2" skills="$3" kind="$4" file="$5" dir name md
+  if [ ! -d "$root" ]; then echo "skip: $label (not installed)"; return; fi
+  for dir in "$REPO"/skills/*/; do
+    name="$(basename "$dir")"; md="$dir/SKILL.md"
+    [ -f "$md" ] || continue
+    link_skill "$skills" "$name"
+    is_always_on "$name" || continue
+    case "$kind:$UNINSTALL" in
+      import:0) add_line "$file" "@$REPO/skills/$name/SKILL.md" ;;
+      import:1) remove_line "$file" "@$REPO/skills/$name/SKILL.md" ;;
+      block:0)  add_block "$file" "$name" "$md" ;;
+      block:1)  remove_block "$file" "$name" ;;
+    esac
+  done
+  echo "ok: $label"
+}
+
+install_host claude "$HOME/.claude"    "$HOME/.claude/skills"    import "$HOME/.claude/CLAUDE.md"
+install_host codex  "$HOME/.codex"     "$HOME/.codex/skills"     block  "$HOME/.codex/AGENTS.md"
+install_host pi     "$HOME/.pi/agent"  "$HOME/.pi/agent/skills"  block  "$HOME/.pi/agent/AGENTS.md"
+
+if [ -n "$CURSOR_DIR" ]; then
+  for name in $ALWAYS_ON; do
+    mdc="$CURSOR_DIR/.cursor/rules/$name.mdc"; md="$REPO/skills/$name/SKILL.md"
+    if [ "$UNINSTALL" = 1 ]; then rm -f "$mdc"; continue; fi
+    mkdir -p "$(dirname "$mdc")"
+    { echo "---"; echo "description: $(description "$md")"; echo "alwaysApply: true"; echo "---"; body "$md"; } > "$mdc"
+  done
+  echo "ok: cursor ($CURSOR_DIR)"
+fi
