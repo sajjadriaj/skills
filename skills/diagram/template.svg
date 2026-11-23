@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="392" viewBox="0 0 1000 392" role="img" aria-labelledby="dg-title dg-desc">
+  <title id="dg-title">Checkout flow</title>
+  <desc id="dg-desc">Browser calls API, checkout service writes the order and charges Stripe; Stripe's webhook marks the order paid.</desc>
+  <style>
+    .bg{fill:#FAFAF9}
+    .t{font-family:Inter,"SF Pro Text",-apple-system,"Segoe UI",Roboto,system-ui,sans-serif;fill:#18191D}
+    .title{font-size:18px;font-weight:650;letter-spacing:-0.01em}
+    .subtitle{font-size:13px;fill:#6E717A}
+    .label{font-size:14px;font-weight:600}
+    .sub{font-family:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;font-size:11px;fill:#7A7D86}
+    .kind{font-family:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;font-size:9.5px;letter-spacing:0.08em;fill:#A1A4AC}
+    .elabel{font-size:11px;fill:#6E717A}
+    .elabel-bg{fill:#FAFAF9}
+    .node{fill:#FFFFFF;stroke:#DCDDE1;stroke-width:1}
+    .node.ext{fill:#FAFAF9;stroke:#B9BBC2;stroke-dasharray:4 3}
+    .node.hot{stroke:#4F5BD5;stroke-width:1.5}
+    .node.crit{fill:#FDF3F2;stroke:#D9483B;stroke-width:1.5}
+    .node.high{fill:#FDF6EF;stroke:#DB7A2A;stroke-width:1.5}
+    .node.ok{fill:#F1F8F3;stroke:#2F9A5C;stroke-width:1.5}
+    .dot.crit{fill:#D9483B}.dot.high{fill:#DB7A2A}.dot.med{fill:#C69A12}.dot.ok{fill:#2F9A5C}.dot.info{fill:#3D7BD9}
+    .edge{fill:none;stroke:#A3A6AE;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+    .edge.hot{stroke:#4F5BD5;stroke-width:2}
+    .edge.async{stroke-dasharray:5 4}
+    .head{fill:#A3A6AE}.head.hot{fill:#4F5BD5}
+    .rule{stroke:#E6E7EA;stroke-width:1}
+    .shadow{fill:#18191D;opacity:0.045}
+    @media (prefers-color-scheme:dark){
+      .bg,.elabel-bg{fill:#0F1013}
+      .t{fill:#ECEDF0}
+      .subtitle,.elabel{fill:#8F929C}
+      .sub{fill:#8A8D97}.kind{fill:#5F626C}
+      .node{fill:#17181C;stroke:#2C2E35}
+      .node.ext{fill:#0F1013;stroke:#4A4D56}
+      .node.hot{stroke:#8C95FF}
+      .node.crit{fill:#2A1715;stroke:#F0675A}
+      .node.high{fill:#2A1E12;stroke:#F0954A}
+      .node.ok{fill:#13231A;stroke:#4CC07D}
+      .dot.crit{fill:#F0675A}.dot.high{fill:#F0954A}.dot.med{fill:#E2B93B}.dot.ok{fill:#4CC07D}.dot.info{fill:#6FA2F0}
+      .edge{stroke:#5A5D66}.edge.hot{stroke:#8C95FF}
+      .head{fill:#5A5D66}.head.hot{fill:#8C95FF}
+      .rule{stroke:#23252B}
+      .shadow{fill:#000;opacity:0.35}
+    }
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="head" d="M1 1.5 L9 5 L1 8.5 Z"/></marker>
+    <marker id="arrow-hot" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="head hot" d="M1 1.5 L9 5 L1 8.5 Z"/></marker>
+  </defs>
+
+  <rect class="bg" width="1000" height="392"/>
+
+  <!-- header -->
+  <text class="t title" x="40" y="52">Checkout flow</text>
+  <text class="t subtitle" x="40" y="74">How an order gets paid. Highlighted path = the user's request.</text>
+
+  <!-- edges first, so nodes sit on top -->
+  <path class="edge hot" d="M216 150 H286" marker-end="url(#arrow-hot)"/>
+  <path class="edge hot" d="M464 150 H534" marker-end="url(#arrow-hot)"/>
+  <path class="edge" d="M712 150 H782" marker-end="url(#arrow)"/>
+  <path class="edge" d="M624 180 V242" marker-end="url(#arrow)"/>
+  <path class="edge async" d="M712 274 H782" marker-end="url(#arrow)"/>
+  <path class="edge" d="M872 244 V182" marker-end="url(#arrow)"/>
+
+  <!-- edge labels (bg rect masks the line) -->
+  <text class="t elabel" x="634" y="215">charge</text>
+  <text class="t elabel" x="882" y="215">mark paid</text>
+  <rect class="elabel-bg" x="723" y="258" width="50" height="12"/>
+  <text class="t elabel" x="748" y="268" text-anchor="middle">webhook</text>
+
+  <!-- row 1 -->
+  <rect class="shadow" x="40" y="122" width="176" height="60" rx="10"/>
+  <rect class="node" x="40" y="120" width="176" height="60" rx="10"/>
+  <text class="t kind" x="200" y="138" text-anchor="end">CLIENT</text>
+  <text class="t label" x="60" y="147">Browser</text>
+  <text class="t sub" x="60" y="165">checkout page</text>
+
+  <rect class="shadow" x="288" y="122" width="176" height="60" rx="10"/>
+  <rect class="node hot" x="288" y="120" width="176" height="60" rx="10"/>
+  <text class="t kind" x="448" y="138" text-anchor="end">API</text>
+  <text class="t label" x="308" y="147">API route</text>
+  <text class="t sub" x="308" y="165">api/checkout.ts</text>
+
+  <rect class="shadow" x="536" y="122" width="176" height="60" rx="10"/>
+  <rect class="node hot" x="536" y="120" width="176" height="60" rx="10"/>
+  <text class="t kind" x="696" y="138" text-anchor="end">SVC</text>
+  <text class="t label" x="556" y="147">Checkout</text>
+  <text class="t sub" x="556" y="165">lib/billing/charge.ts</text>
+
+  <rect class="shadow" x="784" y="122" width="176" height="60" rx="10"/>
+  <rect class="node" x="784" y="120" width="176" height="60" rx="10"/>
+  <text class="t kind" x="944" y="138" text-anchor="end">DB</text>
+  <text class="t label" x="804" y="147">Postgres</text>
+  <text class="t sub" x="804" y="165">orders</text>
+
+  <!-- row 2 -->
+  <rect class="shadow" x="536" y="246" width="176" height="60" rx="10"/>
+  <rect class="node ext" x="536" y="244" width="176" height="60" rx="10"/>
+  <text class="t kind" x="696" y="262" text-anchor="end">EXT</text>
+  <text class="t label" x="556" y="271">Stripe</text>
+  <text class="t sub" x="556" y="289">payment intent</text>
+
+  <rect class="shadow" x="784" y="246" width="176" height="60" rx="10"/>
+  <rect class="node crit" x="784" y="244" width="176" height="60" rx="10"/>
+  <circle class="dot crit" cx="944" cy="258" r="4"/>
+  <text class="t label" x="804" y="271">Webhook</text>
+  <text class="t sub" x="804" y="289">not idempotent</text>
+
+  <!-- legend -->
+  <line class="rule" x1="40" y1="336" x2="960" y2="336"/>
+  <path class="edge hot" d="M40 362 H68"/>
+  <text class="t elabel" x="76" y="366">request path</text>
+  <path class="edge async" d="M172 362 H200"/>
+  <text class="t elabel" x="208" y="366">async</text>
+  <rect class="node ext" x="268" y="354" width="16" height="16" rx="4"/>
+  <text class="t elabel" x="292" y="366">external</text>
+  <circle class="dot crit" cx="364" cy="362" r="4"/>
+  <text class="t elabel" x="374" y="366">critical: retries can double-mark orders</text>
+</svg>

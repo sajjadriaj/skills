@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="944" height="392" viewBox="0 0 944 392" role="img" aria-labelledby="dg-title dg-desc">
+  <title id="dg-title">Auth: keep cookie sessions or move to JWT</title>
+  <desc id="dg-desc">Today auth uses cookie sessions. Path A keeps sessions (low risk); if a mobile app ships, add tokens for mobile, which is fine. Path B moves to JWT (high risk, tokens cannot be revoked); if instant logout is needed, a denylist is added, which is sessions again with critical extra complexity.</desc>
+  <style>
+    .bg{fill:#FAFAF9}
+    .t{font-family:Inter,"SF Pro Text",-apple-system,"Segoe UI",Roboto,system-ui,sans-serif;fill:#18191D}
+    .title{font-size:18px;font-weight:650;letter-spacing:-0.01em}
+    .subtitle{font-size:13px;fill:#6E717A}
+    .label{font-size:14px;font-weight:600}
+    .sub{font-family:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;font-size:11px;fill:#7A7D86}
+    .kind{font-family:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;font-size:9.5px;letter-spacing:0.08em;fill:#A1A4AC}
+    .elabel{font-size:11px;fill:#6E717A}
+    .elabel-bg{fill:#FAFAF9}
+    .node{fill:#FFFFFF;stroke:#DCDDE1;stroke-width:1}
+    .node.ext{fill:#FAFAF9;stroke:#B9BBC2;stroke-dasharray:4 3}
+    .node.hot{stroke:#4F5BD5;stroke-width:1.5}
+    .node.crit{fill:#FDF3F2;stroke:#D9483B;stroke-width:1.5}
+    .node.high{fill:#FDF6EF;stroke:#DB7A2A;stroke-width:1.5}
+    .node.ok{fill:#F1F8F3;stroke:#2F9A5C;stroke-width:1.5}
+    .dot.crit{fill:#D9483B}.dot.high{fill:#DB7A2A}.dot.med{fill:#C69A12}.dot.ok{fill:#2F9A5C}.dot.info{fill:#3D7BD9}
+    .edge{fill:none;stroke:#A3A6AE;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+    .edge.hot{stroke:#4F5BD5;stroke-width:2}
+    .edge.async{stroke-dasharray:5 4}
+    .head{fill:#A3A6AE}.head.hot{fill:#4F5BD5}
+    .rule{stroke:#E6E7EA;stroke-width:1}
+    .shadow{fill:#18191D;opacity:0.045}
+    @media (prefers-color-scheme:dark){
+      .bg,.elabel-bg{fill:#0F1013}
+      .t{fill:#ECEDF0}
+      .subtitle,.elabel{fill:#8F929C}
+      .sub{fill:#8A8D97}.kind{fill:#5F626C}
+      .node{fill:#17181C;stroke:#2C2E35}
+      .node.ext{fill:#0F1013;stroke:#4A4D56}
+      .node.hot{stroke:#8C95FF}
+      .node.crit{fill:#2A1715;stroke:#F0675A}
+      .node.high{fill:#2A1E12;stroke:#F0954A}
+      .node.ok{fill:#13231A;stroke:#4CC07D}
+      .dot.crit{fill:#F0675A}.dot.high{fill:#F0954A}.dot.med{fill:#E2B93B}.dot.ok{fill:#4CC07D}.dot.info{fill:#6FA2F0}
+      .edge{stroke:#5A5D66}.edge.hot{stroke:#8C95FF}
+      .head{fill:#5A5D66}.head.hot{fill:#8C95FF}
+      .rule{stroke:#23252B}
+      .shadow{fill:#000;opacity:0.35}
+    }
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="head" d="M1 1.5 L9 5 L1 8.5 Z"/></marker>
+    <marker id="arrow-hot" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="head hot" d="M1 1.5 L9 5 L1 8.5 Z"/></marker>
+  </defs>
+
+  <rect class="bg" width="944" height="392"/>
+
+  <text class="t title" x="40" y="52">Auth: keep sessions or move to JWT</text>
+  <text class="t subtitle" x="40" y="74">Each path forks at a trigger (diamond). Highlighted = recommended path; end color = risk.</text>
+
+  <!-- edges: path B first so the hot path sits on top of the shared stub -->
+  <path class="edge" d="M224 212 H252 Q260 212 260 220 V266 Q260 274 268 274 H294" marker-end="url(#arrow)"/>
+  <path class="edge" d="M496 274 H578"/>
+  <path class="edge" d="M590 274 H670" marker-end="url(#arrow)"/>
+  <path class="edge hot" d="M224 212 H252 Q260 212 260 204 V158 Q260 150 268 150 H294" marker-end="url(#arrow-hot)"/>
+  <path class="edge hot" d="M496 150 H578"/>
+  <path class="edge hot" d="M590 150 H670" marker-end="url(#arrow-hot)"/>
+
+  <!-- divergence points -->
+  <text class="t elabel" x="584" y="134" text-anchor="middle">if mobile app ships</text>
+  <path class="node hot" d="M584 144 L590 150 L584 156 L578 150 Z"/>
+  <text class="t elabel" x="584" y="258" text-anchor="middle">if instant logout needed</text>
+  <path class="node high" d="M584 268 L590 274 L584 280 L578 274 Z"/>
+
+  <!-- start -->
+  <rect class="shadow" x="40" y="184" width="184" height="60" rx="10"/>
+  <rect class="node hot" x="40" y="182" width="184" height="60" rx="10"/>
+  <text class="t kind" x="208" y="200" text-anchor="end">NOW</text>
+  <text class="t label" x="60" y="209">Cookie sessions</text>
+  <text class="t sub" x="60" y="227">auth today</text>
+
+  <!-- path A -->
+  <rect class="shadow" x="296" y="122" width="200" height="60" rx="10"/>
+  <rect class="node hot" x="296" y="120" width="200" height="60" rx="10"/>
+  <circle class="dot ok" cx="480" cy="134" r="4"/>
+  <text class="t label" x="316" y="147">A: Keep sessions</text>
+  <text class="t sub" x="316" y="165">revocable, server-side</text>
+
+  <rect class="shadow" x="672" y="122" width="232" height="60" rx="10"/>
+  <rect class="node ok" x="672" y="120" width="232" height="60" rx="10"/>
+  <circle class="dot ok" cx="888" cy="134" r="4"/>
+  <text class="t label" x="692" y="147">Add tokens for mobile</text>
+  <text class="t sub" x="692" y="165">web keeps sessions; fine</text>
+
+  <!-- path B -->
+  <rect class="shadow" x="296" y="246" width="200" height="60" rx="10"/>
+  <rect class="node high" x="296" y="244" width="200" height="60" rx="10"/>
+  <circle class="dot high" cx="480" cy="258" r="4"/>
+  <text class="t label" x="316" y="271">B: Move to JWT</text>
+  <text class="t sub" x="316" y="289">stateless, can't revoke</text>
+
+  <rect class="shadow" x="672" y="246" width="232" height="60" rx="10"/>
+  <rect class="node crit" x="672" y="244" width="232" height="60" rx="10"/>
+  <circle class="dot crit" cx="888" cy="258" r="4"/>
+  <text class="t label" x="692" y="271">Add denylist</text>
+  <text class="t sub" x="692" y="289">sessions again, plus JWT</text>
+
+  <!-- legend -->
+  <line class="rule" x1="40" y1="336" x2="904" y2="336"/>
+  <path class="edge hot" d="M40 362 H68"/>
+  <text class="t elabel" x="76" y="366">recommended path</text>
+  <circle class="dot ok" cx="196" cy="362" r="4"/>
+  <text class="t elabel" x="206" y="366">low risk</text>
+  <circle class="dot high" cx="268" cy="362" r="4"/>
+  <text class="t elabel" x="278" y="366">high: issued JWTs can't be revoked before expiry</text>
+  <circle class="dot crit" cx="540" cy="362" r="4"/>
+  <text class="t elabel" x="550" y="366">critical: denylist rebuilds sessions on top of JWT</text>
+</svg>
