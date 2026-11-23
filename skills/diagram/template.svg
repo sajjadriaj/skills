@@ -3,12 +3,12 @@
   <desc id="dg-desc">Browser calls API, checkout service writes the order and charges Stripe; Stripe's webhook marks the order paid.</desc>
   <style>
     .bg{fill:#FAFAF9}
-    .t{font-family:Inter,"SF Pro Text",-apple-system,"Segoe UI",Roboto,system-ui,sans-serif;fill:#18191D}
-    .title{font-size:18px;font-weight:650;letter-spacing:-0.01em}
+    .t{font-family:DgSans,Inter,"SF Pro Text",-apple-system,"Segoe UI",Roboto,system-ui,sans-serif;fill:#18191D}
+    .title{font-size:18px;font-weight:600;letter-spacing:-0.01em}
     .subtitle{font-size:13px;fill:#6E717A}
     .label{font-size:14px;font-weight:600}
-    .sub{font-family:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;font-size:11px;fill:#7A7D86}
-    .kind{font-family:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;font-size:9.5px;letter-spacing:0.08em;fill:#A1A4AC}
+    .sub{font-family:DgMono,"JetBrains Mono",ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;font-size:11px;fill:#7A7D86}
+    .kind{font-family:DgMono,"JetBrains Mono",ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;font-size:9.5px;letter-spacing:0.08em;fill:#A1A4AC}
     .elabel{font-size:11px;fill:#6E717A}
     .elabel-bg{fill:#FAFAF9}
     .node{fill:#FFFFFF;stroke:#DCDDE1;stroke-width:1}
@@ -18,10 +18,10 @@
     .node.high{fill:#FDF6EF;stroke:#DB7A2A;stroke-width:1.5}
     .node.ok{fill:#F1F8F3;stroke:#2F9A5C;stroke-width:1.5}
     .dot.crit{fill:#D9483B}.dot.high{fill:#DB7A2A}.dot.med{fill:#C69A12}.dot.ok{fill:#2F9A5C}.dot.info{fill:#3D7BD9}
-    .edge{fill:none;stroke:#A3A6AE;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+    .edge{fill:none;stroke:#A3A6AE;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:round}
     .edge.hot{stroke:#4F5BD5;stroke-width:2}
     .edge.async{stroke-dasharray:5 4}
-    .head{fill:#A3A6AE}.head.hot{fill:#4F5BD5}
+    .head{fill:#A3A6AE;stroke:#A3A6AE;stroke-width:1;stroke-linejoin:round}.head.hot{fill:#4F5BD5;stroke:#4F5BD5}
     .rule{stroke:#E6E7EA;stroke-width:1}
     .shadow{fill:#18191D;opacity:0.045}
     @media (prefers-color-scheme:dark){
@@ -37,14 +37,14 @@
       .node.ok{fill:#13231A;stroke:#4CC07D}
       .dot.crit{fill:#F0675A}.dot.high{fill:#F0954A}.dot.med{fill:#E2B93B}.dot.ok{fill:#4CC07D}.dot.info{fill:#6FA2F0}
       .edge{stroke:#5A5D66}.edge.hot{stroke:#8C95FF}
-      .head{fill:#5A5D66}.head.hot{fill:#8C95FF}
+      .head{fill:#5A5D66;stroke:#5A5D66}.head.hot{fill:#8C95FF;stroke:#8C95FF}
       .rule{stroke:#23252B}
       .shadow{fill:#000;opacity:0.35}
     }
   </style>
   <defs>
-    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="head" d="M1 1.5 L9 5 L1 8.5 Z"/></marker>
-    <marker id="arrow-hot" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="head hot" d="M1 1.5 L9 5 L1 8.5 Z"/></marker>
+    <marker id="arrow" viewBox="0 0 12 12" refX="8" refY="6" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path class="head" d="M2 2.5 L10.5 6 L2 9.5 Z"/></marker>
+    <marker id="arrow-hot" viewBox="0 0 12 12" refX="8" refY="6" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path class="head hot" d="M2 2.5 L10.5 6 L2 9.5 Z"/></marker>
   </defs>
 
   <rect class="bg" width="1000" height="392"/>
@@ -54,12 +54,12 @@
   <text class="t subtitle" x="40" y="74">How an order gets paid. Highlighted path = the user's request.</text>
 
   <!-- edges first, so nodes sit on top -->
-  <path class="edge hot" d="M216 150 H286" marker-end="url(#arrow-hot)"/>
-  <path class="edge hot" d="M464 150 H534" marker-end="url(#arrow-hot)"/>
-  <path class="edge" d="M712 150 H782" marker-end="url(#arrow)"/>
-  <path class="edge" d="M624 180 V242" marker-end="url(#arrow)"/>
-  <path class="edge async" d="M712 274 H782" marker-end="url(#arrow)"/>
-  <path class="edge" d="M872 244 V182" marker-end="url(#arrow)"/>
+  <path class="edge hot" d="M216 150 H282" marker-end="url(#arrow-hot)"/>
+  <path class="edge hot" d="M464 150 H530" marker-end="url(#arrow-hot)"/>
+  <path class="edge" d="M712 150 H778" marker-end="url(#arrow)"/>
+  <path class="edge" d="M624 180 V238" marker-end="url(#arrow)"/>
+  <path class="edge async" d="M712 274 H778" marker-end="url(#arrow)"/>
+  <path class="edge" d="M872 244 V186" marker-end="url(#arrow)"/>
 
   <!-- edge labels (bg rect masks the line) -->
   <text class="t elabel" x="634" y="215">charge</text>
@@ -84,7 +84,7 @@
   <rect class="node hot" x="536" y="120" width="176" height="60" rx="10"/>
   <text class="t kind" x="696" y="138" text-anchor="end">SVC</text>
   <text class="t label" x="556" y="147">Checkout</text>
-  <text class="t sub" x="556" y="165">lib/billing/charge.ts</text>
+  <text class="t sub" x="556" y="165">billing/charge.ts</text>
 
   <rect class="shadow" x="784" y="122" width="176" height="60" rx="10"/>
   <rect class="node" x="784" y="120" width="176" height="60" rx="10"/>

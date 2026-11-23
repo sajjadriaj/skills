@@ -7,7 +7,7 @@ Each skill is a folder under `skills/` with a `SKILL.md` (agent-skills format).
 |---|---|---|
 | `clear-response` | Plain-language gist first, severity-coded must-know items, ASCII diagrams, jargon explained inline, pathways/risks/divergence for plans | yes |
 | `orient` | One-page map of an unfamiliar area before changing it: gist, diagram with file paths, glossary, landmines, where the change goes | no (on request / unfamiliar area) |
-| `diagram` | Clean SVG diagrams (architecture, flow, sequence, state, decision paths, timeline) with a fixed design system, light/dark, self-checked via `render.py` | no (on request) |
+| `diagram` | Clean SVG diagrams (architecture, flow, sequence, state, decision paths, timeline) with a fixed design system, light/dark, fonts embedded + layout lint via `build.py` | no (on request) |
 | `handoff` | Write, update, or resume from `~/workspace/handoff/<project>/handoff.md` with a fixed structure and verified facts | no (on request / session start) |
 
 ## Install
@@ -45,3 +45,5 @@ must-know sections stay on everywhere.
 ```bash
 tests/test_install.sh   # runs the installer against a sandbox $HOME
 ```
+
+Fonts in `skills/diagram/fonts/` (Inter, JetBrains Mono) are under the SIL Open Font License; see the OFL files there.

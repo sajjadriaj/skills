@@ -11,16 +11,16 @@ One visual language for every diagram: quiet, precise, meaningful color only. Th
 
 1. Decide the one thing the diagram must make obvious (the request path, the failure point, the decision). Everything else is secondary and visually quieter.
 2. Pick a type (below) and sketch it in ASCII in chat first. That's the user's instant preview.
-3. Write the SVG by copying the `<style>` and `<defs>` from `template.svg` (same folder) verbatim. Do not invent new colors, fonts or stroke widths.
+3. Write the SVG by copying the `<style>` and `<defs>` from `template.svg` (same folder) verbatim. Do not invent new colors, fonts, stroke widths or markers.
 4. Lay out on the grid (below). Compute every coordinate; never eyeball.
-5. Render and look: `python3 <skill-dir>/render.py file.svg <out-dir>` makes `.light.png` and `.dark.png`. Open both images and fix overlaps, clipped text, crossing lines, uneven gaps. Repeat until clean. If it exits 2 (no renderer), say the diagram is unchecked.
+5. Build and look: `python3 <skill-dir>/build.py file.svg <out-dir>` embeds the fonts (subset, a few KB), prints `lint:` lines for text overflowing its node, overlapping text and edges crossing nodes, and writes `.light.png` + `.dark.png`. Fix every `lint:` line, open both images and fix anything else off (uneven gaps, cramped labels). Repeat until zero lint lines and clean images. If it exits 2 (no renderer), say the diagram is unchecked. Always run it: without it the fonts are not embedded.
 6. Save to `docs/diagrams/<slug>.svg` in a repo (else the current dir). Give the path and the markdown embed `![<title>](docs/diagrams/<slug>.svg)`. Offer PNG for tools that don't take SVG (slides, Google Docs).
 
 ## Grid and geometry
 
 - 8px grid. Canvas padding 40. Title baseline y=52, subtitle y=74, content starts y=120.
 - Nodes: height 60 (label + sub) or 44 (label only), `rx=10`, uniform width per column.
-- Width: label 14px semi-bold ≈ 8.2px/char, sub (mono 11px) ≈ 7px/char, plus 20px padding each side; round up to 8. Use the widest node in the column.
+- Width: label (Inter 14px/600) ≈ 8.4px/char, sub (JetBrains Mono 11px) = 6.6px/char exactly, kind tag needs ~60px on the right; plus 20px padding each side; round up to 8. Use the widest node in the column. The lint check is the final word.
 - Gaps: 72 between columns, 64 between rows; more when an edge carries a label.
 - Text in node: label at (x+20, y+27), sub at (x+20, y+45), kind tag right-aligned at (x+w-16, y+18).
 - Every node gets a `shadow` rect at y+2 drawn just before it.
@@ -29,7 +29,7 @@ One visual language for every diagram: quiet, precise, meaningful color only. Th
 ## Edges
 
 - Orthogonal only (H/V segments). Bends: `Q` corner with 8px radius. Never diagonal, never crossing a node.
-- Draw edges before nodes. End 2px short of the target so the arrowhead touches the border.
+- Draw edges before nodes. Start exactly on the source border; end exactly 6px before the target border (the arrowhead covers the last 3px and stops 3px short: an even gap everywhere). Never put `marker-end` on a path that doesn't reach a node.
 - `edge` = normal, `edge hot` + `#arrow-hot` = THE path the diagram is about (one per diagram), `edge async` = queues, webhooks, events.
 - Labels: 11px, one or two words, beside vertical edges (x+10), above horizontal edges; on short gaps put an `elabel-bg` rect behind the text.
 
@@ -55,4 +55,4 @@ One visual language for every diagram: quiet, precise, meaningful color only. Th
 - Sentence case labels, no trailing periods, no emoji, no icons, no gradients, no drop shadows beyond the `shadow` rect.
 - Title says what the diagram shows; subtitle says how to read it ("Highlighted path = the user's request").
 - Keep `<title>`/`<desc>` filled (accessibility, and how it reads in a screen reader or search).
-- Self-contained: no external fonts, images or scripts (GitHub and docs strip them).
+- Self-contained: no external font links, images or scripts (GitHub and docs strip them). Fonts are embedded by build.py; never hand-edit the `dg-fonts` block.
