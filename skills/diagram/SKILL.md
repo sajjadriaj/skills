@@ -31,6 +31,7 @@ One visual language for every diagram: quiet, precise, meaningful color only. Th
 - Orthogonal only (H/V segments). Bends: `Q` corner with 8px radius. Never diagonal, never crossing a node.
 - Draw edges before nodes. Start exactly on the source border; end exactly 6px before the target border (the arrowhead covers the last 3px and stops 3px short: an even gap everywhere). Never put `marker-end` on a path that doesn't reach a node.
 - `edge` = normal, `edge hot` + `#arrow-hot` = THE path the diagram is about (one per diagram), `edge async` = queues, webhooks, events.
+- Forks: branches share one trunk from the source, then split at a bend; draw the `hot` branch last so it sits on top at the shared segment.
 - Labels: 11px, one or two words, beside vertical edges (x+10), above horizontal edges; on short gaps put an `elabel-bg` rect behind the text.
 
 ## Meaning, not decoration
@@ -45,7 +46,7 @@ One visual language for every diagram: quiet, precise, meaningful color only. Th
 - **Architecture / flow**: left-to-right main path on row 1, side effects below. See `template.svg`.
 - **Sequence**: actors as nodes in one row; dashed vertical lifelines (`edge async`); numbered messages as horizontal edges going down, labels above ("1 POST /checkout").
 - **State**: nodes = states (44 high), edges = events as labels; start state `hot`, terminal states `ok`/`crit`.
-- **Decision paths** (see `example-paths.svg`): start node left, branches fan right on separate rows; a divergence point is a 12px diamond (`node` styles) with the trigger as its label; each branch ends in a node marked `ok`/`high`/`crit` for its risk.
+- **Decision paths** (see `example-paths.svg`): start node left, branches fan right on separate rows; a divergence point is a 12px diamond on the edge (fill = background, stroke = the edge's own color, 1.5px) with the trigger as its label above; each branch ends in a node marked `ok`/`high`/`crit` for its risk.
 - **Timeline**: one horizontal `rule` axis, 8px circles on it, label above, date below (mono); highlight "now" with `hot`.
 
 ## Rules that keep it extraordinary
