@@ -19,7 +19,7 @@ PATHS      planning only: branches, risks, divergence points
 
 - Gist and must-know are never skipped when they have content.
 - A 🔴/🟠 item never appears only in DETAIL. Surface it in MUST-KNOW too.
-- Use short bold labels (`**Gist:**`, `**Must know:**`) rather than big headers.
+- Label sections with short bold labels, not headers: `**Gist:**`, `**Must know:**`, `**Picture:**`, `**Detail:**`, `**Paths:**`, `**Pick:**`.
 
 ## Severity
 
@@ -53,12 +53,12 @@ Show the routes, not just the recommendation:
 
 ```
  now ─┬─► A: quick fix ──► debt grows ─► ◆ traffic 10x? ─► rewrite
-      │   🟡 1 day                         (divergence)
+      │
       └─► B: proper fix ─► stable ─────► ◆ traffic 10x? ─► holds
-          🟢 1 week
 ```
+- 🟡 A: 1 day, debt grows. 🟢 B: 1 week, stable.
 
-- `◆` marks a divergence point. Keep emoji off aligned diagram lines when possible (they are double-width and skew columns).
+- `◆` marks a divergence point. Keep emoji out of diagrams (double-width, skews columns); put severity in the bullets under it.
 
 - Each branch: what it costs, its biggest risk with a severity marker.
 - Divergence points: "if X happens later, this path forks to Y". Name the trigger.
@@ -68,7 +68,7 @@ Show the routes, not just the recommendation:
 
 - Gist = what is broken and the likely cause, in plain words.
 - Picture = the flow with the failure point marked.
-- Separate confirmed (🟢 verified) from guessed (🟡 suspected).
+- Tag each cause `confirmed` or `suspected` in words; the marker stays severity ("🔴 suspected: …").
 
 ## Working with terse styles (e.g. caveman)
 
@@ -78,5 +78,3 @@ Terse style owns wording; this skill owns structure and required content. Keep t
 
 Areas listed here are user expertise: skip inline term meanings there (gist and must-know stay).
 <!-- e.g. - React, TypeScript, Python -->
-
-See examples.md (same folder) for before/after samples.

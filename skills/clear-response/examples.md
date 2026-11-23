@@ -31,7 +31,7 @@
 + app.get('/x', (req, res) => { bus.once('done', () => res.send()) })
 ```
 
-🟡 Suspected, not verified: confirm by watching `bus.listenerCount('done')` climb under load.
+🟠 suspected, not confirmed: verify by watching `bus.listenerCount('done')` climb under load.
 
 ## Development
 
@@ -69,15 +69,15 @@
 **Paths:**
 
 ```
- now ─┬─► A: server sessions ─► simple ─► ◆ mobile app? ─► add tokens
-      │   🟢 low risk                       (divergence)   later, OK
+ now ─┬─► A: server sessions ─► ◆ mobile app later? ─► add tokens
+      │                                                for mobile
       │
-      └─► B: JWT ─► stateless ─► ◆ need instant logout? ─► add denylist
-          🟠 revocation hard                               = sessions again
+      └─► B: JWT ─► ◆ need instant logout? ─► add denylist
+                                              = sessions again
 ```
 
-- A costs: one session store (Redis, an in-memory database). Risk 🟡 store goes down = everyone logged out.
-- B costs: refresh-token rotation logic. Risk 🟠 leaked tokens stay valid.
+- 🟢 A costs one session store (Redis, an in-memory database). Risk 🟡: store goes down = everyone logged out.
+- 🟠 B costs refresh-token rotation logic. Risk 🟠: leaked tokens stay valid until expiry.
 - Divergence: if you ship a mobile app later, A forks to adding tokens for mobile only; B was already there.
 
 **Pick:** A. You get instant logout for free, and the mobile fork is cheap to take later.

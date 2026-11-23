@@ -51,4 +51,40 @@ echo "$OUT" | grep -q 'warn:' || fail "no warn for existing real dir"
 HOME="$H" "$REPO/install.sh" --uninstall >/dev/null
 [ -f "$H/.claude/skills/clear-response/mine" ] || fail "uninstall removed user's real dir"
 
+# binary/odd bytes in CLAUDE.md must survive uninstall
+seed
+printf 'line1\nbad\0nul\ncaf\xe9 latin1\nline4\n' > "$H/.claude/CLAUDE.md"; cp "$H/.claude/CLAUDE.md" "$ROOT/claude.orig"
+HOME="$H" "$REPO/install.sh" >/dev/null && HOME="$H" "$REPO/install.sh" --uninstall >/dev/null
+cmp -s "$H/.claude/CLAUDE.md" "$ROOT/claude.orig" || fail "CLAUDE.md with NUL/latin1 not restored"
+
+# start marker without end marker: warn, never delete user content
+seed
+printf '<!-- assistant-skills:clear-response:start -->\nuser later note\n' >> "$H/.codex/AGENTS.md"; cp "$H/.codex/AGENTS.md" "$ROOT/agents.orig"
+OUT="$(HOME="$H" "$REPO/install.sh")"
+echo "$OUT" | grep -q 'warn:.*AGENTS.md' || fail "no warn for unterminated block"
+cmp -s "$H/.codex/AGENTS.md" "$ROOT/agents.orig" || fail "unterminated block: AGENTS.md changed on install"
+HOME="$H" "$REPO/install.sh" --uninstall >/dev/null || fail "uninstall aborted on unterminated block"
+cmp -s "$H/.codex/AGENTS.md" "$ROOT/agents.orig" || fail "unterminated block: AGENTS.md changed on uninstall"
+
+# user's own symlink at target: warn, keep it through install and uninstall
+seed
+mkdir -p "$H/.claude/skills" "$ROOT/elsewhere"; ln -s "$ROOT/elsewhere" "$H/.claude/skills/clear-response"
+OUT="$(HOME="$H" "$REPO/install.sh")"
+echo "$OUT" | grep -q 'warn:' || fail "no warn for foreign symlink"
+[ "$(readlink "$H/.claude/skills/clear-response")" = "$ROOT/elsewhere" ] || fail "foreign symlink replaced"
+HOME="$H" "$REPO/install.sh" --uninstall >/dev/null
+[ -L "$H/.claude/skills/clear-response" ] || fail "uninstall removed foreign symlink"
+
+# dangling foreign symlink at target: warn, don't crash
+seed
+mkdir -p "$H/.claude/skills"; ln -s "$ROOT/gone" "$H/.claude/skills/clear-response"
+HOME="$H" "$REPO/install.sh" | grep -q 'warn:' || fail "dangling symlink: no warn or crash"
+
+# repo path with a space: claude @import can't hold it -> warn, no import line
+seed
+SP="$ROOT/my repo"; mkdir -p "$SP"; cp -r "$REPO/install.sh" "$REPO/skills" "$SP/"
+OUT="$(HOME="$H" "$SP/install.sh")"
+echo "$OUT" | grep -q 'warn:.*space' || fail "no warn for repo path with space"
+grep -q '^@' "$H/.claude/CLAUDE.md" && fail "import line written for path with space"
+
 echo PASS
