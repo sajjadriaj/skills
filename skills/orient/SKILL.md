@@ -1,6 +1,6 @@
 ---
 name: orient
-description: Before changing code in an area the user doesn't know well (or when they ask to "orient", "map this", "explain this codebase/area", "what am I looking at"), produce a one-page map - plain-language gist, ASCII diagram of the parts with file paths, glossary, landmines, and where the change goes - so the user can steer instead of trusting blindly.
+description: Before changing code in an area the user says they don't know, or one not listed under clear-response Strong areas / learn Know well (or when they ask to "orient", "map this", "explain this codebase/area", "what am I looking at"), produce a one-page map - plain-language gist, ASCII diagram of the parts with file paths, glossary, landmines, and where the change goes - so the user can steer instead of trusting blindly.
 ---
 
 # orient
@@ -9,7 +9,7 @@ Goal: in one page, give the user enough of a mental model to judge and steer the
 
 ## Process
 
-1. Pin the scope: the task, or the area the user named. If neither is clear, ask one question.
+1. Pin the scope: the task, or the area the user named. If neither is clear, state your assumed scope in one line and proceed. Ask first only if a wrong guess would waste a lot of work.
 2. If the user keeps learning notes (learn skill, `~/workspace/learn/<domain>.md`), read the relevant ones first: skip terms they already know, lean on their recorded traps.
 3. Read before claiming. Trace the real flow end to end: entry point, the code it calls, where data is stored, what runs on deploy. Use file search and reading, not guesses from names.
 4. Hunt landmines on purpose: prod credentials or prod DB in local env, migrations, money/payment paths, auth, cron/queue jobs, generated code, shared config, anything with no tests.
@@ -28,6 +28,7 @@ Goal: in one page, give the user enough of a mental model to judge and steer the
 
 - Map: ≤ 60 columns, 3-10 boxes, arrows show data/control flow, mark external systems (DB, queue, third-party API) distinctly, e.g. `[(postgres)]`, `{stripe}`.
 - Cite `path:line` for every claim the user might act on.
+- Landmines involving credentials: name the variable and file, never the value.
 - Terms: include the project's own vocabulary (model names, internal service names), not only general tech words.
 - Change goes: list the blast radius (other callers, jobs, tests touching the same code). If the change looks risky, say which landmine it touches.
 - Tag inferences: anything not read in code or run goes under Unverified.

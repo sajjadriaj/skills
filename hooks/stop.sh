@@ -8,7 +8,8 @@ MARK="${TMPDIR:-/tmp}/assistant-skills-handoff-asked-${SESSION:-none}"
 
 HANDOFF_ROOT="${ASSISTANT_SKILLS_HANDOFF_ROOT:-$HOME/workspace/handoff}"
 top="$(git rev-parse --show-toplevel 2>/dev/null)" || exit 0
-doc="$HANDOFF_ROOT/$(basename "$top")/handoff.md"
+common="$(git rev-parse --path-format=absolute --git-common-dir)"  # main repo, also from a worktree
+doc="$HANDOFF_ROOT/$(basename "$(dirname "$common")")/handoff.md"
 [ -f "$doc" ] || exit 0
 today="$(date +%F)"
 [ -n "$(git -C "$top" log --since="$today 00:00" --format=%h -1 2>/dev/null)" ] || exit 0

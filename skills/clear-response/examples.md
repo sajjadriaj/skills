@@ -14,6 +14,8 @@
 - 🟠 The server will keep crashing under load until this is fixed. Every restart only buys time.
 - 🟡 Node 18 no longer gets security fixes. Not the cause of this bug, but plan an upgrade.
 
+**Picture:**
+
 ```
  request ─► handler ─► emitter.on(...)   ◄── added every time
                           │
@@ -31,7 +33,7 @@
 + app.get('/x', (req, res) => { bus.once('done', () => res.send()) })
 ```
 
-🟠 suspected, not confirmed: verify by watching `bus.listenerCount('done')` climb under load.
+Suspected, not confirmed: verify by watching `bus.listenerCount('done')` climb under load.
 
 ## Development
 
@@ -45,6 +47,8 @@
 
 **Must know:**
 - 🔴 If duplicates exist when you add the rule, the migration fails partway. Run the cleanup first, and back up the users table, because merging duplicate accounts can't be undone.
+
+**Picture:**
 
 ```
  1. find duplicates ─► 2. merge/delete ─► 3. add unique rule
@@ -76,8 +80,8 @@
                                               = sessions again
 ```
 
-- 🟢 A costs one session store (Redis, an in-memory database). Risk 🟡: store goes down = everyone logged out.
-- 🟠 B costs refresh-token rotation logic. Risk 🟠: leaked tokens stay valid until expiry.
+- A costs one session store (Redis, an in-memory database). Risk 🟡: store goes down = everyone logged out.
+- B costs refresh-token rotation logic. Risk 🟠: leaked tokens stay valid until expiry.
 - Divergence: if you ship a mobile app later, A forks to adding tokens for mobile only; B was already there.
 
 **Pick:** A. You get instant logout for free, and the mobile fork is cheap to take later.

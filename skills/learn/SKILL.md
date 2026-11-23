@@ -1,11 +1,11 @@
 ---
 name: learn
-description: Build the user's personal knowledge as they work - after work in an area they don't know well, capture 3-5 new terms, lessons and traps into a per-domain notes file, and read those notes so later explanations skip what they already know. Use at the end of work in an unfamiliar area, or when the user says "what did I learn", "add to my notes", "teach me", "explain like I'm new to this".
+description: Build the user's personal knowledge as they work - after work in an area they say they don't know or that isn't in their Know well list, capture 3-5 new terms, lessons and traps into a per-domain notes file, and read those notes so later explanations skip what they already know. Use at the end of work in an unfamiliar area, or when the user says "what did I learn", "add to my notes", "teach me", "explain like I'm new to this".
 ---
 
 # learn
 
-Notes root: `~/workspace/learn/` (one file per domain: `<root>/<domain>.md`, e.g. `postgres.md`, `aws-api-gateway.md`, `stripe.md`). Change this line to relocate.
+Notes root: `~/workspace/learn/` (one file per domain: `<root>/<domain>.md`, e.g. `postgres.md`, `aws-api-gateway.md`, `stripe.md`). Change this line to relocate. Can't write there (sandbox)? Show the entries and the target path, and ask.
 
 ## Capture (end of work in an unfamiliar area)
 
@@ -20,7 +20,7 @@ Notes root: `~/workspace/learn/` (one file per domain: `<root>/<domain>.md`, e.g
 # <domain>
 
 ## Terms
-- **<term>**: plain meaning in one line. (YYYY-MM-DD, where it came up)
+- **<term>**: plain meaning in one line. (YYYY-MM-DD)
 
 ## How it works
 - one-line mental model or rule of thumb

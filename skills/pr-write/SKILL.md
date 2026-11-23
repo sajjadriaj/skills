@@ -1,6 +1,6 @@
 ---
 name: pr-write
-description: Write a pull request title and description for the current branch - why, what changed, ship risks, how it was tested, rollback - readable by a reviewer outside the area. Use when the user asks to write/draft/open a PR, a PR description, or "ship this".
+description: Write a pull request title and description for the current branch - why, what changed, ship risks, how it was tested, rollback - readable by a reviewer outside the area. Use when the user asks to write/draft/open a PR, or a PR description.
 ---
 
 # pr-write
@@ -50,4 +50,4 @@ Revert + redeploy | <steps if a migration or data change makes revert unsafe>
 
 ## 4. After
 
-Show the title and body. Create the PR only when asked: `gh pr create --base <base> --title "<title>" --body-file <file>` (push the branch first if needed, and say so).
+Show the title and body. Create the PR only when asked: `gh pr create --base <base> --title "<title>" --body-file <file>` Ask before pushing the branch. If `gh` is unavailable, give the user the title and body to paste.

@@ -9,7 +9,7 @@ Specs describe what a real user does and sees, in product words ("press Apply", 
 
 ## Mode A: from a story or flow
 
-1. Restate the story in one line: `As a <role>, I want <goal>, so that <value>`. If the role, goal, or success isn't clear, ask one question.
+1. Restate the story in one line: `As a <role>, I want <goal>, so that <value>`. If the role, goal, or success isn't clear, state your assumption in one line and proceed. Ask first only if a wrong guess is risky or would waste a lot of work.
 2. Write the happy path as numbered steps: one user action per step, each with observable expectations.
 3. Add edge cases with the checklist below. Keep the ones that matter for this flow; say which you skipped and why in `not_covered`.
 
@@ -39,13 +39,18 @@ preconditions:
 steps:
   - id: S1
     do: Open the cart page
-    expect: [Cart shows 1 item, Subtotal $20.00]
+    expect:
+      - Cart shows 1 item
+      - Subtotal $20.00
   - id: S2
     do: Enter SAVE10 in the coupon field and press Apply
-    expect: [Total shows $18.00, Coupon SAVE10 shown as applied]
+    expect:
+      - Total shows $18.00
+      - Coupon SAVE10 shown as applied
   - id: S3
     do: Press Pay and complete payment with the test card
-    expect: [Confirmation page shows $18.00]
+    expect:
+      - Confirmation page shows $18.00
 after:                               # side effects to verify outside the UI
   - Order in admin shows coupon SAVE10, amount $18.00
   - Confirmation email total is $18.00
@@ -55,7 +60,8 @@ edge_cases:
     why: Coupon worth more than the cart
     setup: Cart $20.00, coupon FIXED50
     do: Apply FIXED50
-    expect: [Total is $0.00 or the coupon is rejected with a message; never negative]
+    expect:
+      - Total is $0.00 or the coupon is rejected with a message; never negative
     from: src/cart.js:10             # only when inferred from code
     suspect: Code subtracts amountOff with no floor; total can go negative
 not_covered:
@@ -67,6 +73,7 @@ not_covered:
 - One action per step; every step has at least one expectation a person can see or check.
 - Exact values (amounts, messages, counts) whenever known; `???` with a question when not, never a guess dressed as fact.
 - Severity on edge cases uses the clear-response meaning (critical = money, security, data loss).
+- Use block lists (`- item`), not `[a, b]`: values like `$1,000.00` or `Note: x` break flow-style YAML.
 - Keep a spec to one flow; 3-10 steps, 3-8 edge cases.
 
 ## Run mode (only when asked to "run" / "walk" a spec)

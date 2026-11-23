@@ -93,11 +93,13 @@ install_host codex  "$HOME/.codex"     "$HOME/.codex/skills"     block  "$HOME/.
 install_host pi     "$HOME/.pi/agent"  "$HOME/.pi/agent/skills"  block  "$HOME/.pi/agent/AGENTS.md"
 
 if [ -n "$CURSOR_DIR" ]; then
-  for name in $ALWAYS_ON; do
-    mdc="$CURSOR_DIR/.cursor/rules/$name.mdc"; md="$REPO/skills/$name/SKILL.md"
+  for md in "$REPO"/skills/*/SKILL.md; do  # always-on skills apply every chat; the rest load when their description matches
+    dir="$(dirname "$md")"; name="$(basename "$dir")"; mdc="$CURSOR_DIR/.cursor/rules/$name.mdc"
     if [ "$UNINSTALL" = 1 ]; then rm -f "$mdc"; continue; fi
+    always=false; is_always_on "$name" && always=true
     mkdir -p "$(dirname "$mdc")"
-    { echo "---"; echo "description: $(description "$md")"; echo "alwaysApply: true"; echo "---"; body "$md"; } > "$mdc"
+    { echo "---"; echo "description: $(description "$md")"; echo "alwaysApply: $always"; echo "---"
+      body "$md" | sed "s|<skill-dir>|$dir|g; s|\`template.svg\` (same folder)|\`$dir/template.svg\`|"; } > "$mdc"
   done
   echo "ok: cursor ($CURSOR_DIR)"
 fi

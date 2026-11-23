@@ -34,6 +34,8 @@ echo "$OUT" | grep -q 'skip: pi' || fail "no 'skip: pi' message"
 
 HOME="$H" "$REPO/install.sh" --cursor "$ROOT/proj" >/dev/null || fail "cursor install exited non-zero"
 grep -q '^alwaysApply: true$' "$ROOT/proj/.cursor/rules/clear-response.mdc" || fail "cursor mdc missing alwaysApply"
+grep -q '^alwaysApply: false$' "$ROOT/proj/.cursor/rules/debug-flow.mdc" || fail "cursor on-demand skill missing"
+grep -q '<skill-dir>' "$ROOT/proj/.cursor/rules/diagram.mdc" && fail "cursor mdc has unresolved <skill-dir>"
 
 HOME="$H" "$REPO/install.sh" --uninstall --cursor "$ROOT/proj" >/dev/null || fail "uninstall exited non-zero"
 cmp -s "$H/.claude/CLAUDE.md" "$ROOT/claude.orig" || fail "CLAUDE.md not restored byte-identical"
@@ -41,6 +43,7 @@ cmp -s "$H/.codex/AGENTS.md" "$ROOT/agents.orig" || fail "AGENTS.md not restored
 [ -e "$H/.claude/skills/clear-response" ] && fail "claude symlink not removed"
 [ -e "$H/.codex/skills/clear-response" ] && fail "codex symlink not removed"
 [ -e "$ROOT/proj/.cursor/rules/clear-response.mdc" ] && fail "cursor mdc not removed"
+[ -e "$ROOT/proj/.cursor/rules/debug-flow.mdc" ] && fail "cursor on-demand mdc not removed"
 
 # pre-existing real dir at target: warn, leave untouched
 seed

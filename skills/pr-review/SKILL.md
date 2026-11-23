@@ -9,7 +9,8 @@ The reader may not know this area. They must leave knowing what the change does,
 
 ## 1. Get the change
 
-- PR number/URL: `gh pr view <n> --json title,body,baseRefName,headRefName,files` and `gh pr diff <n>`.
+- Don't check out or modify the working tree; read other branches' files with `git show <branch>:<path>`.
+- PR number/URL: `gh pr view <n> --json title,body,baseRefName,headRefName,files` and `gh pr diff <n>`. If `gh` is unavailable, say so and use `git fetch origin pull/<n>/head:pr-<n>`, then diff that ref.
 - Branch: `git diff $(git merge-base <base> <branch>)..<branch>` (base = repo default branch unless told).
 - Nothing given: the working tree (`git diff HEAD`, plus untracked files).
 - Read beyond the diff: callers of every changed function, the tests that cover it, config it reads. A diff hides what it breaks elsewhere.
@@ -34,6 +35,7 @@ Each finding: `severity · file:line · problem · failure scenario · fix`.
 - Failure scenario = concrete input or state, then the wrong result ("empty cart + coupon: total goes negative, charge fails"). No scenario, no finding.
 - Verify by reading the code path end to end. If you can't confirm, keep it only as `suspected` with what would confirm it.
 - Look for: wrong logic and edge cases (empty, null, zero, duplicate, concurrent, retry, timezone, unicode, large input); error handling that loses data or hides failure; security (authz on every new endpoint, injection, secrets in code/logs, unsafe deserialization); data (migrations vs. existing rows, nullability, indexes on new queries); contract breaks for existing callers; missing or meaningless tests for the new logic.
+- Secrets found in the diff: report file:line and type, never the value.
 - Skip style and naming unless it changes meaning. No praise padding.
 - Severity: 🔴 data loss, security hole, prod outage, money wrong · 🟠 feature broken for some users, fix before merge · 🟡 risk or debt worth a follow-up.
 

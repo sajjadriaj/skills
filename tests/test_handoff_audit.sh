@@ -34,4 +34,17 @@ echo "$OUT" | grep -q "MED.*$T/r\b" && fail "existing path flagged"
 echo "$OUT" | grep -q 'scripts/orphan.sh is never mentioned' || fail "orphan script not caught"
 echo "$OUT" | grep -q 'scripts/used.sh is never' && fail "used script flagged"
 [ "$(echo "$OUT" | grep -c "credentials in URL")" = 1 ] || fail "placeholder password flagged as secret"
+
+# false positives from following the skill's own advice
+cat > "$T/h/good.md" <<'EOF'
+**Last updated:** 2026-11-21
+Secret: `DB_PASSWORD` in ~/x/.env, token = getToken()
+Build number `20261123`.
+real password=hunter22abc
+EOF
+OUT="$(python3 "$REPO/skills/handoff/audit.py" "$T/h/good.md" --today 2026-11-22)"
+echo "$OUT" | grep -q "no 'Last updated" && fail "bold 'Last updated:' date not parsed"
+echo "$OUT" | grep -q 'good.md:2: possible inline secret' && fail "variable name flagged as secret"
+echo "$OUT" | grep -q '20261123' && fail "all-digit number flagged as sha"
+echo "$OUT" | grep -q 'good.md:4: possible inline secret' || fail "real inline password not caught"
 echo PASS

@@ -1,6 +1,6 @@
 ---
 name: diagram
-description: Draw clean, beautiful, self-contained SVG diagrams (architecture, flow, sequence, state, decision paths, timelines) with a fixed design system, light/dark aware, plus an ASCII preview in chat. Use when the user asks for a diagram, chart of a system, flow, map, or "draw/visualize this", or when a visual would explain a design better than text.
+description: Draw clean, beautiful, self-contained SVG diagrams (architecture, flow, sequence, state, decision paths, timelines) with a fixed design system, light/dark aware, plus an ASCII preview in chat. Use when the user asks for a diagram, chart of a system, flow, map, or "draw/visualize this" as a file. Use only when the user asks for a diagram, SVG or image file; inline ASCII pictures in chat are handled by clear-response.
 ---
 
 # diagram
@@ -9,11 +9,13 @@ One visual language for every diagram: quiet, precise, meaningful color only. Th
 
 ## Workflow
 
+`<skill-dir>` = the folder containing this SKILL.md.
+
 1. Decide the one thing the diagram must make obvious (the request path, the failure point, the decision). Everything else is secondary and visually quieter.
 2. Pick a type (below) and sketch it in ASCII in chat first. That's the user's instant preview.
 3. Write the SVG by copying the `<style>` and `<defs>` from `template.svg` (same folder) verbatim. Do not invent new colors, fonts, stroke widths or markers.
 4. Lay out on the grid (below). Compute every coordinate; never eyeball.
-5. Build and look: `python3 <skill-dir>/build.py file.svg <out-dir>` embeds the fonts (subset, a few KB), prints `lint:` lines for text overflowing its node, overlapping text and edges crossing nodes, and writes `.light.png` + `.dark.png`. Fix every `lint:` line, open both images and fix anything else off (uneven gaps, cramped labels). Repeat until zero lint lines and clean images. If it exits 2 (no renderer), say the diagram is unchecked. Always run it: without it the fonts are not embedded.
+5. Build and look: `python3 <skill-dir>/build.py file.svg <out-dir>` embeds the fonts (subset, a few KB), prints `lint:` lines for text overflowing its node, overlapping text and edges crossing nodes, and writes `.light.png` + `.dark.png`. Fix every `lint:` line, open both images and fix anything else off (uneven gaps, cramped labels). Repeat until zero lint lines and clean images. If the output contains `UNCHECKED` or `warn:`, or it exits 2, tell the user exactly what wasn't checked (layout lint, dark render, embedded fonts); never call it clean. Always run it: without it the fonts are not embedded.
 6. Save to `docs/diagrams/<slug>.svg` in a repo (else the current dir). Final reply: the ASCII sketch (so the user sees it without opening a file), the path, and the markdown embed `![<title>](docs/diagrams/<slug>.svg)`. Offer PNG for tools that don't take SVG (slides, Google Docs).
 
 ## Grid and geometry

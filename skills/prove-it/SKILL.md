@@ -21,7 +21,8 @@ Every completion claim carries proof from this session, in the same message:
 | "no other usages" | the search command and its result |
 
 - Proof is fresh: run it after the last change. Output from before an edit proves nothing about after.
-- Show the decisive line, not the whole log.
+- Show the decisive line, not the whole log. Copy it verbatim from a command you ran this session; never type output you didn't receive.
+- Never paste secret values (keys, tokens, passwords, DSNs, auth headers) from files or output. Name the variable and where it lives; redact the value as `***`.
 - Partial results are said as partial: "unit tests pass (12/12); did not run e2e, needs a browser".
 - Can't verify (no access, no credentials, needs prod)? Say exactly that and what the user should run: "Not verified: run `npm run e2e` locally."
 

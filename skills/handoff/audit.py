@@ -28,7 +28,7 @@ SECRET_PATTERNS = [
     (r"\bsk-[A-Za-z0-9_-]{20,}", "API secret key"),
     (r"\bxox[abpr]-[A-Za-z0-9-]{10,}", "Slack token"),
     (r"\b[a-z][a-z0-9+.-]*://[^\s:/@`]+:(?![<$*{\[]|x+@|\.\.\.)[^\s@/`]{3,}@", "credentials in URL"),  # skips <pw>, $PW, ***, {pw}
-    (r"(?i)\b(password|passwd|secret|token|api[_-]?key)\s*[:=]\s*[`'\"]?[A-Za-z0-9/+_\-]{8,}", "inline secret value"),
+    (r"(?i)\b(password|passwd|secret|token|api[_-]?key)\s*[:=]\s*[`'\"]?(?-i:(?![A-Z0-9_]+\b)(?![\w.]+\())(?=[^\s`'\"]*[a-z])(?=[^\s`'\"]*\d)[A-Za-z0-9/+_\-]{8,}", "inline secret value"),  # skips VAR_NAMES, calls()
 ]
 POISON_PATTERNS = [
     r"(?i)ignore (all |any )?(previous|prior|above) (instructions|rules)",
@@ -63,7 +63,7 @@ def main() -> int:
         out.append((sev, f"{doc.name}:{ln}: {msg}" if ln else msg))
 
     # age + size
-    m = re.search(r"(?i)last updated\s*\**\s*(\d{4}-\d{2}-\d{2})", text)
+    m = re.search(r"(?i)last updated\W{0,6}(\d{4}-\d{2}-\d{2})", text)
     if not m:
         add("HIGH", "no 'Last updated YYYY-MM-DD' line")
     else:
@@ -90,7 +90,7 @@ def main() -> int:
         if re.search(RELATIVE_DATES, line):
             add("MED", f"relative date ({re.search(RELATIVE_DATES, line).group(0)}); use YYYY-MM-DD", i)
         if not re.search(r"(?i)\b(image|digest|container|sha256|docker|ecr)\b", line):
-            for sha in re.findall(r"`([0-9a-f]{7,40})`", line):
+            for sha in re.findall(r"`(?=[0-9a-f]*[a-f])([0-9a-f]{7,40})`", line):
                 sha_seen.setdefault(sha, i)
         hm = re.search(r"`([\w./-]+)`[^`\n]{0,20}\bhead\b[^`\n]{0,20}`([0-9a-f]{7,40})`", line)
         if hm and repos:

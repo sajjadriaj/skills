@@ -9,7 +9,9 @@ for name in $ALWAYS_ON; do
   echo
 done
 
-project="$(basename "$(git rev-parse --show-toplevel 2>/dev/null || pwd)")"
+# main repo's folder name, also from inside a git worktree
+common="$(git rev-parse --path-format=absolute --git-common-dir 2>/dev/null)"
+if [ -n "$common" ]; then project="$(basename "$(dirname "$common")")"; else project="$(basename "$PWD")"; fi
 doc="$HANDOFF_ROOT/$project/handoff.md"
 if [ -f "$doc" ]; then
   echo "A session handoff exists for this project: $doc"
