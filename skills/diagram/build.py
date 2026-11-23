@@ -128,6 +128,8 @@ def render(svg: Path, out: Path) -> int:
         import cairosvg
         cairosvg.svg2png(url=str(svg), write_to=f"{stem}.light.png", scale=2)
         print(f"{stem}.light.png  (cairosvg: light only; playwright failed: {err})")
+        print("UNCHECKED: layout lint needs Chromium (Playwright). Tell the user overlaps/overflow were not checked,"
+              " or ask them to run build.py outside the sandbox.")
         return 0
     except ImportError:
         print(f"no renderer (pip install playwright && playwright install chromium); last error: {err}")

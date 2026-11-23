@@ -47,7 +47,7 @@
     - {name: svg created, cmd: 'test -s checkout.svg'}
     - {name: fonts embedded, cmd: 'grep -q "dg-fonts:start" checkout.svg'}
     - {name: lint clean, cmd: 'test "$(python3 {skills}/diagram/build.py checkout.svg | grep -c "^lint:")" = 0'}
-    - {name: ascii preview in reply, regex: '```[^`]*[─│┌►▼]'}
+    - {name: ascii preview in reply, regex: '```[^`]*[─│┌►▼→↓]'}
 
 - id: handoff/audit
   skill: handoff
