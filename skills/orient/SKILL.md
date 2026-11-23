@@ -10,9 +10,10 @@ Goal: in one page, give the user enough of a mental model to judge and steer the
 ## Process
 
 1. Pin the scope: the task, or the area the user named. If neither is clear, ask one question.
-2. Read before claiming. Trace the real flow end to end: entry point, the code it calls, where data is stored, what runs on deploy. Use file search and reading, not guesses from names.
-3. Hunt landmines on purpose: prod credentials or prod DB in local env, migrations, money/payment paths, auth, cron/queue jobs, generated code, shared config, anything with no tests.
-4. Write the map (below). Stop at about one screen; offer depth instead of dumping it.
+2. If the user keeps learning notes (learn skill, `~/workspace/learn/<domain>.md`), read the relevant ones first: skip terms they already know, lean on their recorded traps.
+3. Read before claiming. Trace the real flow end to end: entry point, the code it calls, where data is stored, what runs on deploy. Use file search and reading, not guesses from names.
+4. Hunt landmines on purpose: prod credentials or prod DB in local env, migrations, money/payment paths, auth, cron/queue jobs, generated code, shared config, anything with no tests.
+5. Write the map (below). Stop at about one screen; offer depth instead of dumping it.
 
 ## Output
 
@@ -45,4 +46,4 @@ Goal: in one page, give the user enough of a mental model to judge and steer the
 
 ## After
 
-Offer: "Want this saved?" If yes, save to `docs/orient/<area>.md` in the repo, or into the project's handoff if one exists. If clear-response is active, its severity palette and jargon rules apply here too.
+Offer: "Want this saved?" If yes, save to `docs/orient/<area>.md` in the repo, or into the project's handoff if one exists. If clear-response is active, its severity palette and jargon rules apply here too. Offer to capture new terms and traps with the learn skill.

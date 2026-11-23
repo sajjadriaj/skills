@@ -1,17 +1,19 @@
 #!/usr/bin/env bash
 # Install assistant-skills into Claude Code, Codex, pi and (per project) Cursor.
-# Usage: ./install.sh [--uninstall] [--cursor <project-dir>]
+# Usage: ./install.sh [--uninstall] [--cursor <project-dir>] [--skip <host>]...
 set -euo pipefail
 
-ALWAYS_ON="clear-response"   # skills that load every session
+ALWAYS_ON="clear-response prove-it"   # skills that load every session
 
 REPO="$(CDPATH= cd -- "$(dirname "$0")" && pwd)"
 UNINSTALL=0
 CURSOR_DIR=""
+SKIP=" "
 while [ $# -gt 0 ]; do
   case "$1" in
     --uninstall) UNINSTALL=1 ;;
     --cursor) CURSOR_DIR="${2:?--cursor needs a project dir}"; shift ;;
+    --skip) SKIP="$SKIP${2:?--skip needs a host} "; shift ;;
     *) echo "unknown arg: $1" >&2; exit 2 ;;
   esac
   shift
@@ -68,6 +70,7 @@ link_skill() {  # skills_dir name
 # host: label root skills_dir always_on_kind always_on_file
 install_host() {
   local label="$1" root="$2" skills="$3" kind="$4" file="$5" dir name md
+  case "$SKIP" in *" $label "*) echo "skip: $label (--skip)"; return ;; esac
   if [ ! -d "$root" ]; then echo "skip: $label (not installed)"; return; fi
   for dir in "$REPO"/skills/*/; do
     name="$(basename "$dir")"; md="$dir/SKILL.md"

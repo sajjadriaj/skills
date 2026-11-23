@@ -1,0 +1,16 @@
+{
+  "name": "assistant-skills",
+  "owner": {
+    "name": "sajjad"
+  },
+  "metadata": {
+    "description": "Portable assistant skills for clear, verified, well-reviewed development work."
+  },
+  "plugins": [
+    {
+      "name": "assistant-skills",
+      "source": "./",
+      "description": "Clear responses, orientation maps, diagrams, handoffs, PR review/write, debugging, proof of work, learning notes, product test specs."
+    }
+  ]
+}

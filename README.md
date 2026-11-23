@@ -10,9 +10,24 @@ Each skill is a folder under `skills/` with a `SKILL.md` (agent-skills format).
 | `diagram` | Clean SVG diagrams (architecture, flow, sequence, state, decision paths, timeline) with a fixed design system, light/dark, fonts embedded + layout lint via `build.py` | no (on request) |
 | `pr-review` | Review any PR/branch/diff: plain-language brief, verified findings with failure scenarios, ship-risk checklist, verdict | no (on request) |
 | `pr-write` | PR title + description: why, behavior changes, ship risks, honest test notes, rollback | no (on request) |
-| `handoff` | Write, update, or resume from `~/workspace/handoff/<project>/handoff.md` with a fixed structure and verified facts | no (on request / session start) |
+| `handoff` | Write, update, audit, or resume from `~/workspace/handoff/<project>/handoff.md`; `audit.py` checks staleness, secrets, broken refs | no (on request / session start) |
+| `prove-it` | No "done/fixed/works" without the command and its output in the same message | yes |
+| `debug-flow` | Reproduce, hypothesis tree, test each branch, confirmed root cause, fix with a test that failed first | no (on bugs) |
+| `learn` | Per-domain notes (`~/workspace/learn/<domain>.md`): terms, traps, what you know; teach mode | no (end of unfamiliar work / on request) |
+| `product-test` | User story or codebase into step-by-step YAML product test specs (steps, expectations, edge cases); optional browser run | no (on request) |
 
 ## Install
+
+**Claude Code (plugin, recommended):** skills + hooks (always-on skills at session start, handoff resume prompt, end-of-day handoff reminder).
+
+```
+/plugin marketplace add /path/to/assistant-skills
+/plugin install assistant-skills@assistant-skills
+```
+
+Then run `./install.sh --skip claude` for the other hosts, so Claude Code doesn't load the skills twice.
+
+**Everything via script:**
 
 ```bash
 ./install.sh                          # Claude Code, Codex, pi (skips hosts not installed)
@@ -45,7 +60,15 @@ must-know sections stay on everywhere.
 ## Tests
 
 ```bash
-tests/test_install.sh   # runs the installer against a sandbox $HOME
+tests/test_install.sh         # installer against a sandbox $HOME
+tests/test_handoff_audit.sh   # handoff audit.py against a seeded doc
+evals/run.py                  # every skill on claude, codex, pi: pass/fail grid
+evals/run.py --host codex --case pr-review
+PI_MODEL=provider/model evals/run.py --host pi
 ```
+
+Evals run each case's prompt with the skill loaded, in a temp dir seeded with a small fixture
+(`evals/fixtures/shop`: a repo with planted bugs on `feature/coupons`), then check the reply and the
+files. Replies land in `evals/out/`. Re-run after editing any skill.
 
 Fonts in `skills/diagram/fonts/` (Inter, JetBrains Mono) are under the SIL Open Font License; see the OFL files there.

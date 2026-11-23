@@ -62,9 +62,13 @@ seed
 printf '<!-- assistant-skills:clear-response:start -->\nuser later note\n' >> "$H/.codex/AGENTS.md"; cp "$H/.codex/AGENTS.md" "$ROOT/agents.orig"
 OUT="$(HOME="$H" "$REPO/install.sh")"
 echo "$OUT" | grep -q 'warn:.*AGENTS.md' || fail "no warn for unterminated block"
-cmp -s "$H/.codex/AGENTS.md" "$ROOT/agents.orig" || fail "unterminated block: AGENTS.md changed on install"
+grep -q 'user later note' "$H/.codex/AGENTS.md" || fail "unterminated block: user content lost on install"
+[ "$(grep -c 'assistant-skills:clear-response:start' "$H/.codex/AGENTS.md")" = 1 ] || fail "unterminated block: second clear-response block added"
+head -c "$(wc -c < "$ROOT/agents.orig")" "$H/.codex/AGENTS.md" | cmp -s - "$ROOT/agents.orig" || fail "unterminated block: original content altered"
 HOME="$H" "$REPO/install.sh" --uninstall >/dev/null || fail "uninstall aborted on unterminated block"
-cmp -s "$H/.codex/AGENTS.md" "$ROOT/agents.orig" || fail "unterminated block: AGENTS.md changed on uninstall"
+grep -q 'user later note' "$H/.codex/AGENTS.md" || fail "unterminated block: user content lost on uninstall"
+[ "$(grep -c 'assistant-skills:clear-response:start' "$H/.codex/AGENTS.md")" = 1 ] || fail "unterminated block (uninstall): second clear-response block added"
+head -c "$(wc -c < "$ROOT/agents.orig")" "$H/.codex/AGENTS.md" | cmp -s - "$ROOT/agents.orig" || fail "unterminated block: original content altered"
 
 # user's own symlink at target: warn, keep it through install and uninstall
 seed
@@ -86,5 +90,11 @@ SP="$ROOT/my repo"; mkdir -p "$SP"; cp -r "$REPO/install.sh" "$REPO/skills" "$SP
 OUT="$(HOME="$H" "$SP/install.sh")"
 echo "$OUT" | grep -q 'warn:.*space' || fail "no warn for repo path with space"
 grep -q '^@' "$H/.claude/CLAUDE.md" && fail "import line written for path with space"
+
+# --skip claude leaves Claude untouched
+seed
+HOME="$H" "$REPO/install.sh" --skip claude | grep -q 'skip: claude (--skip)' || fail "--skip claude not honored"
+[ -e "$H/.claude/skills/clear-response" ] && fail "--skip claude still linked skills"
+cmp -s "$H/.claude/CLAUDE.md" "$ROOT/claude.orig" || fail "--skip claude touched CLAUDE.md"
 
 echo PASS

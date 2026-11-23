@@ -1,0 +1,7 @@
+{
+  "name": "assistant-skills",
+  "version": "0.1.0",
+  "description": "Clear responses, orientation maps, diagrams, handoffs, PR review/write, debugging, proof of work, learning notes, product test specs.",
+  "author": { "name": "sajjad" },
+  "hooks": "./hooks/hooks.json"
+}
