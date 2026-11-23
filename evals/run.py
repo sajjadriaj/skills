@@ -25,6 +25,7 @@ SKILLS = ROOT / "skills"
 FIX = Path(__file__).resolve().parent / "fixtures"
 OUT = Path(__file__).resolve().parent / "out"
 TIMEOUT = 900
+INFRA_ERR = r"usage limit|rate limit|quota|\b429\b|\b410\b|^TIMEOUT$"
 
 
 def skill_text(name: str) -> str:
@@ -106,7 +107,10 @@ def run_case(host: str, case: dict) -> tuple:
         out = OUT / host / (case["id"].replace("/", "__") + ".md")
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(reply)
-        failed = [c["name"] for c in case["checks"] if not check(c, reply, work)]
+        if not reply.strip() or re.search(INFRA_ERR, reply[:2000], re.I):
+            failed = ["ERR: host gave no answer (quota, auth or crash); see reply file"]
+        else:
+            failed = [c["name"] for c in case["checks"] if not check(c, reply, work)]
         files = out.with_suffix(".files")
         shutil.rmtree(files, ignore_errors=True)
         shutil.copytree(work, files, ignore=shutil.ignore_patterns(".git", "node_modules", "*.png"))
@@ -132,7 +136,8 @@ def main() -> int:
         row = []
         for h in hosts:
             _, _, failed, n = next(r for r in results if r[0] == h and r[1] == c["id"])
-            row.append(f"{n - len(failed)}/{n}".ljust(8) if not failed else f"FAIL {n - len(failed)}/{n}")
+            row.append("ERR".ljust(8) if failed and failed[0].startswith("ERR") else
+                       f"{n - len(failed)}/{n}".ljust(8) if not failed else f"FAIL {n - len(failed)}/{n}")
             bad += bool(failed)
         print(f"{c['id']:<{width}}  " + "  ".join(row))
     for h, cid, failed, _ in results:

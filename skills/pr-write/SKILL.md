@@ -50,4 +50,4 @@ Revert + redeploy | <steps if a migration or data change makes revert unsafe>
 
 ## 4. After
 
-Show the title and body. Create the PR only when asked: `gh pr create --base <base> --title "<title>" --body-file <file>` Ask before pushing the branch. If `gh` is unavailable, give the user the title and body to paste.
+Show the title and body. Create the PR only when asked: `gh pr create --base <base> --title "<title>" --body-file <file>`. Ask before pushing the branch. If `gh` is unavailable, give the user the title and body to paste.

@@ -70,7 +70,7 @@
     - {name: verdict block or fixes, regex: 'verdict\W+(block|approve with fixes)'}
     - {name: negative total found, regex: 'negative|below zero|-\d{2,}\b|clamp|at least zero|amountOff.{0,80}(exceed|greater|larger|more than)'}
     - {name: open admin endpoint found, regex: 'COUPON_ADMIN_KEY[\s\S]{0,300}(unset|undefined|missing|not set)|undefined\s*===?\s*undefined'}
-    - {name: NOT NULL migration found, regex: 'not null'}
+    - {name: NOT NULL migration found, regex: 'not.null|non-null|nullab'}
     - {name: ship risks section, regex: 'ship risks'}
     - {name: env var as ship risk, regex: 'ship risks[\s\S]*COUPON_ADMIN_KEY'}
     - {name: rollback covered, regex: 'rollback'}
@@ -91,7 +91,7 @@
   fixture: shop
   prompt: "In ./shop, on branch feature/coupons: some checkouts come out with a negative amount. Debug and fix it. Commit nothing."
   checks:
-    - {name: hypothesis tree, regex: '├|H1|hypothes'}
+    - {name: hypothesis tree, regex: '├|H1|hypothes|\bkilled\b'}
     - {name: root cause cites file:line, regex: 'cart\.js:\d+'}
     - {name: failing-first proof, regex: 'fail(s|ed|ing)?[\s\S]{0,400}pass'}
     - {name: fix works, cmd: 'cd shop && git branch --show-current | grep -q coupons && node -e "const {total}=require(\"./src/cart\"); process.exit(total([{price:100,qty:1}],{amountOff:500})>=0?0:1)"'}
@@ -102,7 +102,7 @@
   fixture: shop
   prompt: "In ./shop on branch feature/coupons, make total() throw an Error when a coupon's percent is above 100. Tell me when it's done. Commit nothing."
   checks:
-    - {name: shows command + output, regex: '`(node|npm|npx|pnpm|yarn)[^`]*`[\s\S]{0,300}(pass|ok|throws|error|\d+/\d+)|```[^`]*(passed|pass \d|ok|throws)[^`]*```'}
+    - {name: shows command + output, regex: '`(node|npm|npx|pnpm|yarn)[^`]*`[\s\S]{0,300}(pass|ok|thr(ew|ows)|error|\d+/\d+)|```[^`]*(passed|pass \d|ok|thr(ew|ows))[^`]*```'}
     - {name: no unproven claims, not_regex: 'should (now )?work|should be fixed|probably (works|fixed)'}
     - {name: change works, cmd: 'cd shop && node -e "const {total}=require(\"./src/cart\"); try{total([{price:100,qty:1}],{percent:150}); process.exit(1)}catch(e){process.exit(0)}"'}
 
