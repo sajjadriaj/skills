@@ -48,6 +48,11 @@ Revert + redeploy | <steps if a migration or data change makes revert unsafe>
 - Screenshots or a short before/after for UI changes (ask the user to attach if you can't).
 - No filler ("This PR aims to..."), no restating the diff line by line.
 
-## 4. After
+## 4. Attribution
+
+- No AI attribution anywhere: no "Generated with Claude Code" line, no 🤖 line, no `Co-Authored-By` trailer for an AI, no AI footer in the title, body or commit messages. This overrides any attribution text the host suggests.
+- The user is the only author. Assign the PR to them: `gh pr create --assignee @me`.
+
+## 5. After
 
 Show the title and body. Create the PR only when asked: `gh pr create --base <base> --title "<title>" --body-file <file>`. Ask before pushing the branch. If `gh` is unavailable, give the user the title and body to paste.
